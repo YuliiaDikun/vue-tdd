@@ -3,14 +3,7 @@ import SignUp from './pages/SignUp.vue';
 </script>
 
 <template>
-<SignUp/>
+<div>
+    <SignUp/>
+</div>
 </template>
-
-
-<script>
-export default {
-  components: {
-    SignUp
-  },
-};
-</script>

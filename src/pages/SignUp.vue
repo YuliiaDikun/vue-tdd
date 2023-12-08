@@ -1,4 +1,4 @@
 <template>
-<h1>Sign Up</h1>     
+<h1 class="text-white text-center">Sign Up</h1>     
    
 </template>
