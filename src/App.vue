@@ -3,7 +3,7 @@ import SignUp from './pages/SignUp.vue';
 </script>
 
 <template>
-<div>
+<div >
     <SignUp/>
 </div>
 </template>

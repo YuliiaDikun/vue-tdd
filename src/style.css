@@ -4,8 +4,14 @@
 @tailwind utilities;
 
 
-@layer components {
-  .bg {
-    @apply bg-black-800;
+@layer base {
+  body {
+    @apply bg-slate-800 
+  }
+  h1 {
+    @apply text-2xl;
+  }
+  h2 {
+    @apply text-xl;
   }
 }

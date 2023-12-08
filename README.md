@@ -4,3 +4,5 @@ Learning Vue 3 / Vite by applying test driven development (using jest, @vue/test
 
 
 [guide](https://blog.canopas.com/vue-3-component-testing-with-jest-8b80a8a8946b#45e0)
+
+[basic lesson](https://vueschool.io/lessons/learn-how-to-test-vuejs-lifecycle-methods?friend=vuejs)
