@@ -26,14 +26,26 @@ describe("Sign Up Page", () => {
       const wrapper = mount(SignUp);
       const signUpButton = wrapper.find("button");
       expect(signUpButton.exists()).toBe(true);
-      expect(signUpButton.attributes('type')).toBe('submit');
-      expect(signUpButton.attributes('disabled')).toBe('disabled');
+      expect(signUpButton.attributes("type")).toBe("submit");     
     });
 
     test("SingUp button is disabled initially", () => {
       const wrapper = mount(SignUp);
-      const signUpButton = wrapper.find("button");      
-      expect(signUpButton.attributes('disabled')).toBe('disabled');
+      const signUpButton = wrapper.find("button");
+      expect(signUpButton.attributes().disabled).toBeDefined()
+    });
+  });
+  describe("interactions", () => {
+    test("enables the button when the password and password repeat fileds the same value", async () => {
+      const wrapper = mount(SignUp);
+      const passwordInput = wrapper.find('[data-test="password"]');
+      const passwordRepeatInput = wrapper.find('[data-test="password-repeat"]');
+      const signUpButton = wrapper.find("button");
+      
+      await passwordInput.setValue("password");
+      await passwordRepeatInput.setValue("password");
+      
+      expect(signUpButton.attributes('disabled')).toBeUndefined();
     });
   });
 });
