@@ -1,5 +1,6 @@
 import { mount } from "@vue/test-utils";
 import SignUp from "../src/pages/SignUp.vue";
+import axios from "axios";
 
 describe("Sign Up Page", () => {
   describe("layout", () => {
@@ -26,13 +27,13 @@ describe("Sign Up Page", () => {
       const wrapper = mount(SignUp);
       const signUpButton = wrapper.find("button");
       expect(signUpButton.exists()).toBe(true);
-      expect(signUpButton.attributes("type")).toBe("submit");     
+      expect(signUpButton.attributes("type")).toBe("submit");
     });
 
     test("SingUp button is disabled initially", () => {
       const wrapper = mount(SignUp);
       const signUpButton = wrapper.find("button");
-      expect(signUpButton.attributes().disabled).toBeDefined()
+      expect(signUpButton.attributes().disabled).toBeDefined();
     });
   });
   describe("interactions", () => {
@@ -41,11 +42,38 @@ describe("Sign Up Page", () => {
       const passwordInput = wrapper.find('[data-test="password"]');
       const passwordRepeatInput = wrapper.find('[data-test="password-repeat"]');
       const signUpButton = wrapper.find("button");
-      
+
       await passwordInput.setValue("password");
       await passwordRepeatInput.setValue("password");
-      
-      expect(signUpButton.attributes('disabled')).toBeUndefined();
+
+      expect(signUpButton.attributes("disabled")).toBeUndefined();
+    });
+    test("sends user data to backend after clicking the submit button", async () => {
+      const wrapper = mount(SignUp);
+      const userNameInput = wrapper.find('[data-test="username"]');
+      const emailInput = wrapper.find('[data-test="email"]');
+      const passwordInput = wrapper.find('[data-test="password"]');
+      const passwordRepeatInput = wrapper.find('[data-test="password-repeat"]');
+      const signUpButton = wrapper.find("button");
+
+      await userNameInput.setValue("user1");
+      await emailInput.setValue("user1@mail.com");
+      await passwordInput.setValue("password");
+      await passwordRepeatInput.setValue("password");
+
+      const mockFn = jest.fn();
+      axios.post = mockFn;
+
+      await signUpButton.trigger("click");
+
+      const firstCall = mockFn.mock.calls[0];
+      const body = firstCall[1];
+
+      expect(body).toEqual({
+        username: 'user1',
+        email: 'user1@mail.com',
+        password: 'password',        
+      })
     });
   });
 });
