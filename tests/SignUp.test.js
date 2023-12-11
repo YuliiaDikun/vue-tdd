@@ -7,15 +7,33 @@ describe("Sign Up Page", () => {
       const wrapper = mount(SignUp);
       expect(wrapper.find("h1").exists()).toBe(true);
     });
-    test('it has a username input', () => {
+
+    test("inputs data-tests attributes", () => {
       const wrapper = mount(SignUp);
-      const input = wrapper.find('[data-test="input"]');
-      expect(input.exists()).toBe(true)
-    })
-    test('it has a email input', () => {
+      expect(wrapper.find('[data-test="username"]').exists()).toBe(true);
+      expect(wrapper.find('[data-test="email"]').exists()).toBe(true);
+      expect(wrapper.find('[data-test="password"]').exists()).toBe(true);
+      expect(wrapper.find('[data-test="password-repeat"]').exists()).toBe(true);
+    });
+
+    test("has password type for input", () => {
       const wrapper = mount(SignUp);
-      const input = wrapper.findAll('[data-test="input"]').length;
-      expect(input).toBe(2)
-    })
+      const inputLength = wrapper.findAll('[type="password"]').length;
+      expect(inputLength).toBe(2);
+    });
+
+    test("SignUp Component renders the singUp button", () => {
+      const wrapper = mount(SignUp);
+      const signUpButton = wrapper.find("button");
+      expect(signUpButton.exists()).toBe(true);
+      expect(signUpButton.attributes('type')).toBe('submit');
+      expect(signUpButton.attributes('disabled')).toBe('disabled');
+    });
+
+    test("SingUp button is disabled initially", () => {
+      const wrapper = mount(SignUp);
+      const signUpButton = wrapper.find("button");      
+      expect(signUpButton.attributes('disabled')).toBe('disabled');
+    });
   });
 });
