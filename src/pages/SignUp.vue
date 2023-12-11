@@ -1,9 +1,7 @@
 <template>
   <div class="max-w-7lx mx-auto px-5 pt-10 text-white">
     <h1 class="text-white text-center mb-6">Sign Up</h1>
-    <form  
-      class="flex flex-col items-center max-w-[500px] gap-5 justify-center"
-    >
+    <form class="flex flex-col items-center max-w-[500px] gap-5 justify-center">
       <label for="username">Username</label>
       <input
         v-model="username"
@@ -44,7 +42,7 @@
         class="min-w-[150px] h-[47px] flex items-center justify-center border rounded-sm mx-auto mt-6 disabled:bg-slate-600"
         type="submit"
         :disabled="isDisabled"
-        @click.prevent="submit"   
+        @click.prevent="submit"
       >
         Sign Up
       </button>
@@ -52,7 +50,7 @@
   </div>
 </template>
 <script setup>
-import axios from "axios";
+
 import { ref, computed } from "vue";
 
 const username = ref("");
@@ -67,10 +65,19 @@ const isDisabled = computed(() => {
 });
 
 const submit = () => {
-  axios.post("/api/1.0/users", {
-    username: username.value,
-    email: email.value,
-    password: password.value,
+   const requestBody = {
+      username: username.value,
+      email: email.value,
+      password: password.value,
+    }
+  //   axios.post("/api/1.0/users", requestBody);
+
+  fetch("/api/1.0/users", {
+    method: "POST",
+    body: JSON.stringify(requestBody),
+    headers: {
+      'Content-Type': 'application/json'
+    }
   });
 };
 </script>

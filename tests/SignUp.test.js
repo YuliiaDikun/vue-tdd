@@ -1,6 +1,10 @@
 import { mount } from "@vue/test-utils";
 import SignUp from "../src/pages/SignUp.vue";
-import axios from "axios";
+
+import { http, HttpResponse } from 'msw';
+import { setupServer } from 'msw/node';
+import "whatwg-fetch"
+
 
 describe("Sign Up Page", () => {
   describe("layout", () => {
@@ -49,7 +53,17 @@ describe("Sign Up Page", () => {
       expect(signUpButton.attributes("disabled")).toBeUndefined();
     });
     test("sends user data to backend after clicking the submit button", async () => {
+      let requestBody;
+      const server = setupServer(
+        http.post("/api/1.0/users", async ({request }) => {
+          requestBody = await request.json();
+          return HttpResponse('', {status: 200});
+      })
+      );
+      server.listen();
+
       const wrapper = mount(SignUp);
+
       const userNameInput = wrapper.find('[data-test="username"]');
       const emailInput = wrapper.find('[data-test="email"]');
       const passwordInput = wrapper.find('[data-test="password"]');
@@ -61,19 +75,21 @@ describe("Sign Up Page", () => {
       await passwordInput.setValue("password");
       await passwordRepeatInput.setValue("password");
 
-      const mockFn = jest.fn();
-      axios.post = mockFn;
+      // const mockFn = jest.fn();
+      // axios.post = mockFn;
+      // window.fetch = mockFn;
 
       await signUpButton.trigger("click");
 
-      const firstCall = mockFn.mock.calls[0];
-      const body = firstCall[1];
+      await server.close();
 
-      expect(body).toEqual({
-        username: 'user1',
-        email: 'user1@mail.com',
-        password: 'password',        
-      })
+      
+
+      expect(requestBody).toEqual({
+        username: "user1",
+        email: "user1@mail.com",
+        password: "password",
+      });
     });
   });
 });
