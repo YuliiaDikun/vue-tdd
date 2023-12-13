@@ -39,6 +39,22 @@ describe("Sign Up Page", () => {
     });
   });
   describe("interactions", () => {
+    const setup = async () => {
+      const wrapper = mount(SignUp);
+
+      const userNameInput = wrapper.find('[data-test="username"]');
+      const emailInput = wrapper.find('[data-test="email"]');
+      const passwordInput = wrapper.find('[data-test="password"]');
+      const passwordRepeatInput = wrapper.find('[data-test="password-repeat"]');
+      const signUpButton = wrapper.find("button");
+
+      await userNameInput.setValue("user1");
+      await emailInput.setValue("user1@mail.com");
+      await passwordInput.setValue("password");
+      await passwordRepeatInput.setValue("password");
+
+      await signUpButton.trigger("click");
+    };
     test("enables the button when the password and password repeat fileds the same value", async () => {
       const wrapper = mount(SignUp);
       const passwordInput = wrapper.find('[data-test="password"]');
@@ -59,23 +75,9 @@ describe("Sign Up Page", () => {
         })
       );
 
-      server.listen();    
+      server.listen();
 
-      const wrapper = mount(SignUp);
-
-      const userNameInput = wrapper.find('[data-test="username"]');
-      const emailInput = wrapper.find('[data-test="email"]');
-      const passwordInput = wrapper.find('[data-test="password"]');
-      const passwordRepeatInput = wrapper.find('[data-test="password-repeat"]');
-      const signUpButton = wrapper.find("button");
-
-      await userNameInput.setValue("user1");
-      await emailInput.setValue("user1@mail.com");
-      await passwordInput.setValue("password");
-      await passwordRepeatInput.setValue("password");
-  
-      await signUpButton.trigger("click");
-
+      await setup();
       await server.close();
 
       expect(requestBody).toEqual({
@@ -83,6 +85,23 @@ describe("Sign Up Page", () => {
         email: "user1@mail.com",
         password: "password",
       });
+    });
+    test("does not allow clicking to the button when in an ongoing api call", async () => {
+      let counter = 0;
+      const server = setupServer(
+        rest.post("/api/1.0/users", (req, res, ctx) => {
+          counter += 1;
+          return res(ctx.status(200));
+        })
+      );
+
+      server.listen();
+      
+      await setup();
+
+      await server.close();
+
+      expect(counter).toBe(1);
     });
   });
 });
