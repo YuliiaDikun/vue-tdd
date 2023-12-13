@@ -28,7 +28,6 @@
     "postcss": "^8.4.32",
     "tailwindcss": "^3.3.6",
     "vite": "^4.0.0",
-    "web-streams-polyfill": "^3.2.1",
-    "whatwg-fetch": "^3.6.19"
+    "web-streams-polyfill": "^3.2.1"
   }
 }

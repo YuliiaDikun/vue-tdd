@@ -50,7 +50,7 @@
   </div>
 </template>
 <script setup>
-
+import axios from "axios";
 import { ref, computed } from "vue";
 
 const username = ref("");
@@ -64,20 +64,11 @@ const isDisabled = computed(() => {
     : true;
 });
 
-const submit = () => {
-   const requestBody = {
+const submit = () => {  
+    axios.post("/api/1.0/users", {
       username: username.value,
       email: email.value,
       password: password.value,
-    }
-  //   axios.post("/api/1.0/users", requestBody);
-
-  fetch("/api/1.0/users", {
-    method: "POST",
-    body: JSON.stringify(requestBody),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  });
+    });  
 };
 </script>

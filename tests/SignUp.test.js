@@ -3,8 +3,6 @@ import SignUp from "../src/pages/SignUp.vue";
 
 import { setupServer } from "msw/node";
 import { rest } from "msw";
-import "whatwg-fetch";
-
 
 describe("Sign Up Page", () => {
   describe("layout", () => {
@@ -60,8 +58,8 @@ describe("Sign Up Page", () => {
           return res(ctx.status(200));
         })
       );
-      server.listen();
-    
+
+      server.listen();    
 
       const wrapper = mount(SignUp);
 
@@ -75,11 +73,7 @@ describe("Sign Up Page", () => {
       await emailInput.setValue("user1@mail.com");
       await passwordInput.setValue("password");
       await passwordRepeatInput.setValue("password");
-
-      // const mockFn = jest.fn();
-      // axios.post = mockFn;
-      // window.fetch = mockFn;
-
+  
       await signUpButton.trigger("click");
 
       await server.close();
