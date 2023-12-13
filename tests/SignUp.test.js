@@ -41,7 +41,6 @@ describe("Sign Up Page", () => {
   describe("interactions", () => {
     const setup = async () => {
       const wrapper = mount(SignUp);
-
       const userNameInput = wrapper.find('[data-test="username"]');
       const emailInput = wrapper.find('[data-test="email"]');
       const passwordInput = wrapper.find('[data-test="password"]');
@@ -96,12 +95,37 @@ describe("Sign Up Page", () => {
       );
 
       server.listen();
-      
       await setup();
 
       await server.close();
 
       expect(counter).toBe(1);
+    });
+    test("spinner is visible when in an ongoing api call", async () => {
+      const wrapper = mount(SignUp);
+      const signUpButton = wrapper.find("button");
+      const passwordInput = wrapper.find('[data-test="password"]');
+      const passwordRepeatInput = wrapper.find('[data-test="password-repeat"]');
+    
+
+      await passwordInput.setValue("password");
+      await passwordRepeatInput.setValue("password");
+
+      expect(signUpButton.attributes("disabled")).toBeUndefined();
+
+      await signUpButton.trigger("click");
+
+      expect(signUpButton.attributes().disabled).toBeDefined();
+      
+      const spinner = wrapper.find('[data-test="progress"]');
+
+      expect(spinner.isVisible()).toBe(true);
+    });
+
+    test("spinner is hidden after in an ongoing api call", async () => {
+      const wrapper = mount(SignUp);
+      const spinner = wrapper.find('[data-test="progress"]');
+      expect(spinner.isVisible()).toBe(false);
     });
   });
 });
