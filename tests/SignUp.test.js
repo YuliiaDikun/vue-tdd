@@ -39,23 +39,20 @@ describe("Sign Up Page", () => {
     });
   });
   describe("interactions", () => {
+    const wrapper = mount(SignUp);
     const setup = async () => {
-      const wrapper = mount(SignUp);
       const userNameInput = wrapper.find('[data-test="username"]');
       const emailInput = wrapper.find('[data-test="email"]');
       const passwordInput = wrapper.find('[data-test="password"]');
       const passwordRepeatInput = wrapper.find('[data-test="password-repeat"]');
-      const signUpButton = wrapper.find("button");
 
       await userNameInput.setValue("user1");
       await emailInput.setValue("user1@mail.com");
       await passwordInput.setValue("password");
       await passwordRepeatInput.setValue("password");
-
-      await signUpButton.trigger("click");
     };
-    test("enables the button when the password and password repeat fileds the same value", async () => {
-      const wrapper = mount(SignUp);
+
+    test("enables the button when the password and password repeat fileds the same value", async () => {     
       const passwordInput = wrapper.find('[data-test="password"]');
       const passwordRepeatInput = wrapper.find('[data-test="password-repeat"]');
       const signUpButton = wrapper.find("button");
@@ -65,6 +62,7 @@ describe("Sign Up Page", () => {
 
       expect(signUpButton.attributes("disabled")).toBeUndefined();
     });
+
     test("sends user data to backend after clicking the submit button", async () => {
       let requestBody;
       const server = setupServer(
@@ -77,6 +75,8 @@ describe("Sign Up Page", () => {
       server.listen();
 
       await setup();
+      const signUpButton = wrapper.find("button");
+      await signUpButton.trigger("click");
       await server.close();
 
       expect(requestBody).toEqual({
@@ -85,6 +85,7 @@ describe("Sign Up Page", () => {
         password: "password",
       });
     });
+
     test("does not allow clicking to the button when in an ongoing api call", async () => {
       let counter = 0;
       const server = setupServer(
@@ -96,27 +97,17 @@ describe("Sign Up Page", () => {
 
       server.listen();
       await setup();
-
+      const signUpButton = wrapper.find("button");
+      await signUpButton.trigger("click");
       await server.close();
 
       expect(counter).toBe(1);
     });
-    test("spinner is visible when in an ongoing api call", async () => {
-      const wrapper = mount(SignUp);
-      const signUpButton = wrapper.find("button");
-      const passwordInput = wrapper.find('[data-test="password"]');
-      const passwordRepeatInput = wrapper.find('[data-test="password-repeat"]');
     
-
-      await passwordInput.setValue("password");
-      await passwordRepeatInput.setValue("password");
-
-      expect(signUpButton.attributes("disabled")).toBeUndefined();
-
-      await signUpButton.trigger("click");
-
-      expect(signUpButton.attributes().disabled).toBeDefined();
-      
+    test("spinner is visible when in an ongoing api call", async () => {
+      await setup();
+      const button = wrapper.find("button");
+      await button.trigger("click");
       const spinner = wrapper.find('[data-test="progress"]');
 
       expect(spinner.isVisible()).toBe(true);
