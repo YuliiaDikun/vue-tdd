@@ -8,14 +8,15 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
-  },
-  devServer: {
-    port: 8080,
-    proxy: {
-        '/api': {
-          target: 'http://localhost:8080',
-          changeOrigin: true
-        },
-      }
-}
+  },  
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ["test/setupTest.js"],
+    deps: {
+      inline: [
+        "msw"
+      ]
+    }
+  }
 });

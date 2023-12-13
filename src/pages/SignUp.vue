@@ -1,7 +1,7 @@
 <template>
   <div class="max-w-7lx mx-auto px-5 pt-10 text-white">
     <h1 class="text-white text-center mb-6">Sign Up</h1>
-    <form class="flex flex-col items-center max-w-[500px] gap-5 justify-center">
+    <form class="mx-auto flex flex-col items-center max-w-[500px] gap-5 justify-center">
       <label for="username">Username</label>
       <input
         v-model="username"

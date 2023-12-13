@@ -1,9 +1,9 @@
 import { mount } from "@vue/test-utils";
 import SignUp from "../src/pages/SignUp.vue";
 
-import { http, HttpResponse } from 'msw';
-import { setupServer } from 'msw/node';
-import "whatwg-fetch"
+import { setupServer } from "msw/node";
+import { rest } from "msw";
+import "whatwg-fetch";
 
 
 describe("Sign Up Page", () => {
@@ -55,12 +55,13 @@ describe("Sign Up Page", () => {
     test("sends user data to backend after clicking the submit button", async () => {
       let requestBody;
       const server = setupServer(
-        http.post("/api/1.0/users", async ({request }) => {
-          requestBody = await request.json();
-          return HttpResponse('', {status: 200});
-      })
+        rest.post("/api/1.0/users", (req, res, ctx) => {
+          requestBody = req.body;
+          return res(ctx.status(200));
+        })
       );
       server.listen();
+    
 
       const wrapper = mount(SignUp);
 
@@ -82,8 +83,6 @@ describe("Sign Up Page", () => {
       await signUpButton.trigger("click");
 
       await server.close();
-
-      
 
       expect(requestBody).toEqual({
         username: "user1",
