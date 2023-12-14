@@ -6,6 +6,6 @@ module.exports = {
   testEnvironment: "jsdom",
 
   testEnvironmentOptions: {
-    customExportConditions: [""],
+    customExportConditions: ["node", "node-addons"],
   },
 };

@@ -1,7 +1,7 @@
 <template>
-  <div class="max-w-7lx mx-auto px-5 pt-10 text-white">
-    <form
-      class="border border-gray-300 rounded-lg p-5 mx-auto flex flex-col items-center max-w-[500px] gap-5 justify-center"
+  <div class="max-w-[500px] mx-auto px-5 pt-10 text-white">
+    <form data-test="form-sing-up" v-if="!singUpSuccess"
+      class="border border-gray-300 rounded-lg p-5 mx-auto flex flex-col items-center  gap-5 justify-center"
     >
       <h1 class="text-white text-center">Sign Up</h1>
       <label for="username">Username</label>
@@ -67,11 +67,14 @@
         </svg>
       </button>
     </form>
+    <p data-test="singUpSuccess" v-show="singUpSuccess" role="alert" class="py-5 px-3 bg-green-900 rounded-xl mt-6 ">Please check your e-mail to activate your account.</p>
   </div>
 </template>
 <script setup>
 import axios from "axios";
 import { ref, computed } from "vue";
+
+
 
 const username = ref("");
 const email = ref("");
@@ -79,6 +82,7 @@ const password = ref("");
 const passwordrepeat = ref("");
 const disabled = ref(false);
 const apiProgress = ref(false);
+const singUpSuccess = ref(false); 
 
 const isDisabled = computed(() => {
   return password.value && passwordrepeat.value
@@ -96,8 +100,16 @@ const submit = () => {
       email: email.value,
       password: password.value,
     })
-    .then(() => {})
-    .catch(() => {})
-    .finally(() => {});
+    .then(() => {
+      singUpSuccess.value = true;
+    })
+    .catch((e) => { 
+      console.log(e)
+    })
+    .finally(() => {
+      singUpSuccess.value = true;
+      disabled.value = false;
+    })
+   
 };
 </script>
