@@ -67,7 +67,7 @@
         </svg>
       </button>
     </form>
-    <p data-test="singUpSuccess" v-show="singUpSuccess" role="alert" class="py-5 px-3 bg-green-900 rounded-xl mt-6 ">Please check your e-mail to activate your account.</p>
+    <p data-test="singUpSuccess" :class="!singUpSuccess && 'hidden'" role="alert" class="py-5 px-3 bg-green-900 rounded-xl mt-6 ">Please check your e-mail to activate your account.</p>
   </div>
 </template>
 <script setup>
@@ -91,6 +91,7 @@ const isDisabled = computed(() => {
 });
 
 const submit = () => {
+ 
   disabled.value = true;
   apiProgress.value = true;
 
