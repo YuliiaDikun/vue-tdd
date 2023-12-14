@@ -103,13 +103,7 @@ const submit = () => {
     .then(() => {
       singUpSuccess.value = true;
     })
-    .catch((e) => { 
-      console.log(e)
-    })
-    .finally(() => {
-      singUpSuccess.value = true;
-      disabled.value = false;
-    })
+    .catch(() => {});    
    
 };
 </script>

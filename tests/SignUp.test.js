@@ -1,6 +1,6 @@
 import { mount, flushPromises, unmount } from "@vue/test-utils";
 import SignUp from "../src/pages/SignUp.vue";
-
+import { nextTick } from 'vue'
 import { setupServer } from "msw/node";
 import { rest } from "msw";
 
@@ -139,25 +139,44 @@ describe("Sign Up Page", () => {
     });
 
     test("displays account activation information after successful sing up request", async () => {     
-      let requestBody;
+      let req2;
       const server = setupServer(
-        rest.post("/api/1.0/users", (req, res, ctx) => {
-          requestBody = req.body;
+        rest.post("/api/1.0/users", (req, res, ctx) => {         
+          req2 = req.body;
           return res(ctx.status(200));
         })
       );
 
       server.listen();
-      await setup();
+      const wrapper = mount(SignUp);  
+      const userNameInput = wrapper.find('[data-test="username"]');
+      const emailInput = wrapper.find('[data-test="email"]');
+      const passwordInput = wrapper.find('[data-test="password"]');
+      const passwordRepeatInput = wrapper.find('[data-test="password-repeat"]');
       const signUpButton = wrapper.find("button");
-      await signUpButton.trigger("click");
-      await server.resetHandlers()
 
-      expect(requestBody).toEqual({
+      expect(signUpButton.attributes().disabled).toBeDefined();
+
+      await userNameInput.setValue("user1");
+      await emailInput.setValue("user1@mail.com");
+      await passwordInput.setValue("password");
+      await passwordRepeatInput.setValue("password");
+
+      expect(signUpButton.attributes("disabled")).toBeUndefined();
+
+      await signUpButton.trigger("click");
+      
+      await server.resetHandlers();      
+      expect(req2).toEqual({
         username: "user1",
         email: "user1@mail.com",
         password: "password",
       });
+
+      const message = wrapper.find("[data-test='singUpSuccess']");      
+      expect(message.isVisible()).toBe(true);
+
+      wrapper.unmount()
     });
 
     test("does not display account activation message after failing sing up", async () => {
@@ -182,9 +201,7 @@ describe("Sign Up Page", () => {
       const signUpButton = wrapper.find("button");
 
       await signUpButton.trigger("click");
-      await server.close();
-
-      await flushPromises();
+      await server.close();     
 
       expect(message.isVisible()).toBe(false);
     });
