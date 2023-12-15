@@ -40,21 +40,6 @@ describe("Sign Up Page", () => {
     });
   });
   describe("interactions", () => {
-    let requestBody;
-    let counter = 0;
-    const server = setupServer(
-      rest.post("/api/1.0/users", (req, res, ctx) => {
-       counter += 1; 
-       requestBody = req.body;        
-        console.log('counter in request', counter)
-        return res.once(ctx.status(200));
-      })
-    );
-
-    beforeAll(() => server.listen());
-    
-    afterAll(() => server.close());
-
     const wrapper = mount(SignUp);
     const setup = async () => {
       const userNameInput = wrapper.find('[data-test="username"]');
@@ -67,6 +52,20 @@ describe("Sign Up Page", () => {
       await passwordInput.setValue("password");
       await passwordRepeatInput.setValue("password");
     };
+    let requestBody;
+    let counter = 0;
+    const server = setupServer(
+      rest.post("/api/1.0/users", (req, res, ctx) => {
+       counter += 1; 
+       requestBody = req.body;        
+        console.log('counter in request', counter)
+        return res.once(ctx.status(200));
+      })
+    );
+
+    beforeAll(() => server.listen());
+   
+    afterAll(() => server.close());    
 
     test("enables the button when the password and password repeat fileds the same value", async () => {
       const passwordInput = wrapper.find('[data-test="password"]');
@@ -112,8 +111,7 @@ describe("Sign Up Page", () => {
     test("spinner is hidden after in an ongoing api call", async () => {
       const wrapper = mount(SignUp);
       const spin = wrapper.find('[data-test="progress"]');      
-      expect(spin.isVisible()).toBe(false);
-      wrapper.unmount()
+      expect(spin.isVisible()).toBe(false);     
     });
 
     test("does not display account activation message before sing up request", async () => {
@@ -133,20 +131,30 @@ describe("Sign Up Page", () => {
       await flushPromises();     
 
       const mess = wrapper.get("[data-test='singUpSuccess']");
-      expect(mess.classes("hidden")).toBe(false);      
+      expect(mess.classes("hidden")).toBe(false);  
+         
     });
-
+    
     test("does not display account activation message after failing sing up", async () => {
       
       server.use(
         rest.post("/api/1.0/users", (req, res, ctx) => {
-        return res(ctx.status(400));
+        return res.once(ctx.status(400));
       }))
-      
-      await setup();
-      const signUpButton = wrapper.find("button");
+     const wrapper = mount(SignUp)
+      const userNameInput = wrapper.find('[data-test="username"]');
+      const emailInput = wrapper.find('[data-test="email"]');
+      const passwordInput = wrapper.find('[data-test="password"]');
+      const passwordRepeatInput = wrapper.find('[data-test="password-repeat"]');
 
+      await userNameInput.setValue("user1");
+      await emailInput.setValue("user1@mail.com");
+      await passwordInput.setValue("password");
+      await passwordRepeatInput.setValue("password");
+      
+      const signUpButton = wrapper.find("button");
       await signUpButton.trigger("click");
+      
       await nextTick();
       await flushPromises(); 
 
@@ -155,15 +163,28 @@ describe("Sign Up Page", () => {
       
     });
     test("hides sign up form after successful sing up request", async () => {
-      await setup();
-      const signUpButton = wrapper.find("button");
-
-      await signUpButton.trigger("click");
       
-
+      server.use(
+        rest.post("/api/1.0/users", (req, res, ctx) => {
+        return res.once(ctx.status(200));
+      }))
+      const wrapper = mount(SignUp)
+      const userNameInput = wrapper.find('[data-test="username"]');
+      const emailInput = wrapper.find('[data-test="email"]');
+      const passwordInput = wrapper.find('[data-test="password"]');
+      const passwordRepeatInput = wrapper.find('[data-test="password-repeat"]');
+     
+      await userNameInput.setValue("user1");
+      await emailInput.setValue("user1@mail.com");
+      await passwordInput.setValue("password");
+      await passwordRepeatInput.setValue("password");     
+      
+      const signUpButton = wrapper.find("button");
+      await signUpButton.trigger("click");     
+     
       await nextTick();
-      await flushPromises();  
-
+      await flushPromises();        
+      await flushPromises();
       const form = wrapper.find("[data-test='form-sing-up']");
       expect(form.exists()).toBe(false);
      
