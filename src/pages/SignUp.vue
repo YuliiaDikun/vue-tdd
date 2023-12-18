@@ -7,42 +7,29 @@
     >
       <h1 class="text-white text-center">Sign Up</h1>
 
-      <label for="username">Username</label>
-      <input
+      <Input
         v-model="username"
         id="username"
-        data-test="username"
-        type="text"
-        placeholder="Username"
+        label="Username"
+        :help="errors?.username"
       />
-      <span v-if="errors?.username !== undefined" class="test-left text-sx text-red-600" data-test="error-name">
-        {{ errors?.username }}
-      </span>
 
-      <div class="w-full">
-        <label for="email">E-mail</label>
-        <input
-          v-model="email"
-          id="email"
-          data-test="email"
-          type="text"
-          placeholder="E-mail"
-        />
-      </div>
+      <Input
+        v-model="email"
+        id="email"
+        label="E-mail"
+        :help="errors?.email"
+      />
 
+      <Input
+        v-model="password"
+        id="password"
+        label="Password"
+        :help="errors?.password"
+      />
+      
       <div class="w-full">
-        <label for="password">password</label>
-        <input
-          v-model="password"
-          id="password"
-          data-test="password"
-          type="password"
-          placeholder="Password"
-        />
-      </div>
-
-      <div class="w-full">
-        <label for="password-repeat">password repeat</label>
+        <label for="password-repeat">Password repeat</label>
         <input
           v-model="passwordrepeat"
           id="password-repeat"
@@ -93,6 +80,7 @@
 <script setup>
 import axios from "axios";
 import { ref, computed } from "vue";
+import Input from "../components/Input.vue";
 
 const username = ref("");
 const email = ref("");
@@ -111,7 +99,6 @@ const isDisabled = computed(() => {
 });
 
 const submit = () => {
-  
   apiProgress.value = true;
 
   axios
@@ -126,11 +113,8 @@ const submit = () => {
     .catch((error) => {
       if (error.response.status === 400) {
         errors.value = error.response.data.validationErrors;
-
-        
       }
       apiProgress.value = false;
-      
     });
 };
 </script>

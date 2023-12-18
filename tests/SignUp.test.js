@@ -37,8 +37,7 @@ describe("Sign Up Page", () => {
       expect(signUpButton.attributes().disabled).toBeDefined();
     });
   });
-  describe("interactions", () => {
-    
+  describe("interactions", () => {    
     const setup = async () => {
       const wrapper = mount(SignUp);
       const userNameInput = wrapper.find('[data-test="username"]');
