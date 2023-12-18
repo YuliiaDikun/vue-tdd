@@ -204,7 +204,6 @@ describe("Sign Up Page", () => {
        
       });
     });
-
     test("displays validation message for password", async () => {
       server.use(
         rest.post("/api/1.0/users", (req, res, ctx) => {
