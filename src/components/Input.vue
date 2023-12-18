@@ -2,8 +2,9 @@
   <div class="w-full">
     <label :for="id">{{ label }}</label>
     <input
+    :class="help !== undefined ? 'border-red-500': 'border-gray-300'"
       :value="modelValue"
-      @input="emit('update:modelValue', $event.target.value)"
+      @input="onInputChange"
       :id="id"
       :data-test="id"
       :type="id=== 'password' ? 'password' : 'text'"
@@ -11,7 +12,7 @@
     />
     <span
       v-if="help !== undefined"
-      class="test-left text-sx text-red-600"
+      class="test-left text-sm text-red-300"
       data-test="error-name"
     >
       {{ help }}
@@ -35,5 +36,7 @@ const props = defineProps({
   },
 });
 
-
+const onInputChange =  (event) => {
+  emit('update:modelValue', event.target.value)
+}
 </script>

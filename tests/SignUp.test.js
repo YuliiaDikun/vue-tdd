@@ -1,4 +1,4 @@
-import { mount, flushPromises } from "@vue/test-utils";
+import { mount} from "@vue/test-utils";
 import SignUp from "../src/pages/SignUp.vue";
 import waitForExpect from "wait-for-expect";
 import { setupServer } from "msw/node";

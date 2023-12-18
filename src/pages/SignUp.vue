@@ -26,8 +26,8 @@
         id="password"
         label="Password"
         :help="errors?.password"
-      />
-      
+      />  
+
       <div class="w-full">
         <label for="password-repeat">Password repeat</label>
         <input
