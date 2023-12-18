@@ -1,9 +1,12 @@
 <template>
   <div class="max-w-[500px] mx-auto px-5 pt-10 text-white">
-    <form data-test="form-sing-up" v-if="!singUpSuccess"
-      class="border border-gray-300 rounded-lg p-5 mx-auto flex flex-col items-center  gap-5 justify-center"
+    <form
+      data-test="form-sing-up"
+      v-if="!singUpSuccess"
+      class="border border-gray-300 rounded-lg p-5 mx-auto flex flex-col items-center gap-5 justify-center"
     >
       <h1 class="text-white text-center">Sign Up</h1>
+
       <label for="username">Username</label>
       <input
         v-model="username"
@@ -12,37 +15,47 @@
         type="text"
         placeholder="Username"
       />
+      <span v-if="errors?.username !== undefined" class="test-left text-sx text-red-600" data-test="error-name">
+        {{ errors?.username }}
+      </span>
 
-      <label for="email">E-mail</label>
-      <input
-        v-model="email"
-        id="email"
-        data-test="email"
-        type="text"
-        placeholder="E-mail"
-      />
+      <div class="w-full">
+        <label for="email">E-mail</label>
+        <input
+          v-model="email"
+          id="email"
+          data-test="email"
+          type="text"
+          placeholder="E-mail"
+        />
+      </div>
 
-      <label for="password">password</label>
-      <input
-        v-model="password"
-        id="password"
-        data-test="password"
-        type="password"
-        placeholder="Password"
-      />
+      <div class="w-full">
+        <label for="password">password</label>
+        <input
+          v-model="password"
+          id="password"
+          data-test="password"
+          type="password"
+          placeholder="Password"
+        />
+      </div>
 
-      <label for="password-repeat">password repeat</label>
-      <input
-        v-model="passwordrepeat"
-        id="password-repeat"
-        data-test="password-repeat"
-        type="password"
-        placeholder="Password repeat"
-      />
+      <div class="w-full">
+        <label for="password-repeat">password repeat</label>
+        <input
+          v-model="passwordrepeat"
+          id="password-repeat"
+          data-test="password-repeat"
+          type="password"
+          placeholder="Password repeat"
+        />
+      </div>
+
       <button
         class="submit_btn"
         type="submit"
-        :disabled="isDisabled || disabled"
+        :disabled="isDisabled || apiProgress"
         @click.prevent="submit"
       >
         Sign Up
@@ -67,22 +80,29 @@
         </svg>
       </button>
     </form>
-    <p data-test="singUpSuccess" :class="!singUpSuccess && 'hidden'" role="alert" class="py-5 px-3 bg-green-900 rounded-xl mt-6 ">Please check your e-mail to activate your account.</p>
+    <p
+      data-test="singUpSuccess"
+      :class="!singUpSuccess && 'hidden'"
+      role="alert"
+      class="py-5 px-3 bg-green-900 rounded-xl mt-6"
+    >
+      Please check your e-mail to activate your account.
+    </p>
   </div>
 </template>
 <script setup>
 import axios from "axios";
 import { ref, computed } from "vue";
 
-
-
 const username = ref("");
 const email = ref("");
 const password = ref("");
 const passwordrepeat = ref("");
-const disabled = ref(false);
+
 const apiProgress = ref(false);
-const singUpSuccess = ref(false); 
+const singUpSuccess = ref(false);
+
+const errors = ref({});
 
 const isDisabled = computed(() => {
   return password.value && passwordrepeat.value
@@ -91,8 +111,7 @@ const isDisabled = computed(() => {
 });
 
 const submit = () => {
- 
-  disabled.value = true;
+  
   apiProgress.value = true;
 
   axios
@@ -104,7 +123,14 @@ const submit = () => {
     .then(() => {
       singUpSuccess.value = true;
     })
-    .catch(() => {});    
-   
+    .catch((error) => {
+      if (error.response.status === 400) {
+        errors.value = error.response.data.validationErrors;
+
+        
+      }
+      apiProgress.value = false;
+      
+    });
 };
 </script>
