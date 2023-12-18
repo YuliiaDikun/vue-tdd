@@ -173,8 +173,60 @@ describe("Sign Up Page", () => {
       await signUpButton.trigger("click");
 
       await waitForExpect(() => {
-        const errorUsername = wrapper.find("[data-test='error-name']");
+        const errorUsername = wrapper.find("[data-test='error-username']");
         expect(errorUsername.text()).toBe("Username cannot be null");
+       
+      });
+    });
+
+    test("displays validation message for email", async () => {
+      server.use(
+        rest.post("/api/1.0/users", (req, res, ctx) => {
+          return res.once(
+            ctx.status(400),
+            ctx.json({
+              validationErrors: {
+                email: "Email cannot be null",
+              },
+            })
+          );
+        })
+      );
+      
+      const wrapper = await setup();
+
+      const signUpButton = wrapper.find("button");
+      await signUpButton.trigger("click");
+
+      await waitForExpect(() => {
+        const errorUsername = wrapper.find("[data-test='error-email']");
+        expect(errorUsername.text()).toBe("Email cannot be null");
+       
+      });
+    });
+
+    test("displays validation message for password", async () => {
+      server.use(
+        rest.post("/api/1.0/users", (req, res, ctx) => {
+          return res.once(
+            ctx.status(400),
+            ctx.json({
+              validationErrors: {
+                password: "Password cannot be null",
+              },
+            })
+          );
+        })
+      );
+      
+      const wrapper = await setup();
+
+      const signUpButton = wrapper.find("button");
+      await signUpButton.trigger("click");
+
+      await waitForExpect(() => {
+        const errorUsername = wrapper.find("[data-test='error-password']");
+        expect(errorUsername.text()).toBe("Password cannot be null");
        
       });
     });

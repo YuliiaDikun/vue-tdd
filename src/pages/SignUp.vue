@@ -31,6 +31,7 @@
       <div class="w-full">
         <label for="password-repeat">Password repeat</label>
         <input
+        :class=" 'border-gray-300'"
           v-model="passwordrepeat"
           id="password-repeat"
           data-test="password-repeat"
