@@ -60,7 +60,18 @@ describe("Sign Up Page", () => {
         return res(ctx.status(200));
       })
     );
-
+    const generateValidationError = (field, message) => {
+      return rest.post("/api/1.0/users", (req, res, ctx) => {
+        return res.once(
+          ctx.status(400),
+          ctx.json({
+            validationErrors: {
+              [field]: message,
+            },
+          })
+        );
+      });
+    };
     beforeAll(() => server.listen());
     beforeEach(() => {
       counter = 0;
@@ -158,22 +169,10 @@ describe("Sign Up Page", () => {
       ${"username"} | ${"Username cannot be null"}
       ${"email"}    | ${"Email cannot be null"}
       ${"password"} | ${"Password cannot be null"}
-      
     `("displays $message for $field", async (params) => {
       const { field, message } = params;
 
-      server.use(
-        rest.post("/api/1.0/users", (req, res, ctx) => {
-          return res.once(
-            ctx.status(400),
-            ctx.json({
-              validationErrors: {
-                [field]: message,
-              },
-            })
-          );
-        })
-      );
+      server.use(generateValidationError(field, message));
 
       const wrapper = await setup();
 
@@ -185,20 +184,10 @@ describe("Sign Up Page", () => {
         expect(errorUsername.text()).toBe(message);
       });
     });
-    
 
     test("hides spinner after error responce recieved", async () => {
       server.use(
-        rest.post("/api/1.0/users", (req, res, ctx) => {
-          return res.once(
-            ctx.status(400),
-            ctx.json({
-              validationErrors: {
-                username: "Username cannot be null",
-              },
-            })
-          );
-        })
+        generateValidationError("username", "Username cannot be null")
       );
 
       const wrapper = await setup();
@@ -215,16 +204,7 @@ describe("Sign Up Page", () => {
 
     test("enables the button after error responce received", async () => {
       server.use(
-        rest.post("/api/1.0/users", (req, res, ctx) => {
-          return res.once(
-            ctx.status(400),
-            ctx.json({
-              validationErrors: {
-                username: "Username cannot be null",
-              },
-            })
-          );
-        })
+        generateValidationError("username", "Username cannot be null")
       );
 
       const wrapper = await setup();
