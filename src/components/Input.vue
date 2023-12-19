@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full">
+  <div class="form-block">
     <label :for="id">{{ label }}</label>
     <input
       :class="help !== undefined ? 'border-red-500' : 'border-gray-300'"
@@ -12,7 +12,7 @@
     />
     <span
       v-if="help !== undefined"
-      class="test-left text-sm text-red-300"
+      class="ml-2 test-left text-sm text-red-300"
       :data-test="`error-${id}`"
     >
       {{ help }}

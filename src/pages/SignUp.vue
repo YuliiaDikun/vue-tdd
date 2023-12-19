@@ -77,7 +77,7 @@
 </template>
 <script setup>
 import axios from "axios";
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import Input from "../components/Input.vue";
 
 const username = ref("");
@@ -89,6 +89,17 @@ const apiProgress = ref(false);
 const singUpSuccess = ref(false);
 
 const errors = ref({});
+
+
+watch(username, () => {
+  delete errors.value.username;
+})
+watch(email, () => {
+  delete errors.value.email;
+})
+watch(password, () => {
+  delete errors.value.passsword;
+})
 
 const isDisabled = computed(() => {
   return password.value && passwordrepeat.value

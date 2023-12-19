@@ -38,9 +38,11 @@ describe("Sign Up Page", () => {
     });
   });
   describe("interactions", () => {
-    let passwordInput;
+    let password;
     let passwordRepeatInput;
     let requestBody;
+    let username;
+    let email;
     let counter = 0;
     const server = setupServer(
       rest.post("/api/1.0/users", (req, res, ctx) => {
@@ -70,25 +72,25 @@ describe("Sign Up Page", () => {
 
     const setup = async () => {
       const wrapper = mount(SignUp);
-      const userNameInput = wrapper.find('[data-test="username"]');
-      const emailInput = wrapper.find('[data-test="email"]');
-      passwordInput = wrapper.find('[data-test="password"]');
+      username = wrapper.find('[data-test="username"]');
+      email = wrapper.find('[data-test="email"]');
+      password = wrapper.find('[data-test="password"]');
       passwordRepeatInput = wrapper.find('[data-test="password-repeat"]');
 
-      await userNameInput.setValue("user1");
-      await emailInput.setValue("user1@mail.com");
-      await passwordInput.setValue("password");
+      await username.setValue("user1");
+      await email.setValue("user1@mail.com");
+      await password.setValue("password");
       await passwordRepeatInput.setValue("password");
       return wrapper;
     };
 
     test("enables the button when the password and password repeat fileds the same value", async () => {
       const wrapper = mount(SignUp);
-      const passwordInput = wrapper.find('[data-test="password"]');
+      const password = wrapper.find('[data-test="password"]');
       const passwordRepeatInput = wrapper.find('[data-test="password-repeat"]');
       const signUpButton = wrapper.find("button");
 
-      await passwordInput.setValue("password");
+      await password.setValue("password");
       await passwordRepeatInput.setValue("password");
 
       expect(signUpButton.attributes("disabled")).toBeUndefined();
@@ -240,7 +242,7 @@ describe("Sign Up Page", () => {
     test("displays mismatch message for password repeat input", async () => {
       const wrapper = await setup();
 
-      await passwordInput.setValue("P4ssword");
+      await password.setValue("P4ssword");
       await passwordRepeatInput.setValue("Password");
 
       await waitForExpect(() => {
@@ -248,5 +250,32 @@ describe("Sign Up Page", () => {
         expect(text.exists()).toBe(true);
       });
     });
+
+    test.each`
+      field         | message
+      ${"username"} | ${"Username cannot be null"}
+      ${"email"}    | ${"Email cannot be null"}
+      ${"password"} | ${"Password cannot be null"}
+    `(
+      "clear validation error after field $field  is updated",
+      async (params) => {
+        const { field, message } = params;
+
+        server.use(generateValidationError(field, message));
+
+        const wrapper = await setup();
+
+        const signUpButton = wrapper.find("button");
+        await signUpButton.trigger("click");
+
+        await waitForExpect(async () => {
+          const textError = wrapper.find(`[data-test='error-${field}']`);
+
+          const fieldInput = wrapper.find(`[data-test='${field}']`);
+          await fieldInput.setValue("newValue");
+          expect(textError.exists()).toBe(false);
+        });
+      }
+    );
   });
 });
