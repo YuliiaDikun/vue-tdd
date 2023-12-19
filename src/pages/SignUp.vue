@@ -24,21 +24,18 @@
       <Input
         v-model="password"
         id="password"
+        type="password"
         label="Password"
         :help="errors?.password"
       />  
 
-      <div class="w-full">
-        <label for="password-repeat">Password repeat</label>
-        <input
-        :class=" 'border-gray-300'"
-          v-model="passwordrepeat"
-          id="password-repeat"
-          data-test="password-repeat"
-          type="password"
-          placeholder="Password repeat"
-        />
-      </div>
+      <Input
+        v-model="passwordrepeat"
+        id="password-repeat"
+        type="password"
+        label="Password repeat"
+        :help="hasPasswordMismatch ? 'Password Mismatch':undefined"
+      />       
 
       <button
         class="submit_btn"
@@ -98,6 +95,10 @@ const isDisabled = computed(() => {
     ? password.value !== passwordrepeat.value
     : true;
 });
+
+const hasPasswordMismatch = computed(() => {
+  return password.value !== passwordrepeat.value 
+})
 
 const submit = () => {
   apiProgress.value = true;

@@ -7,7 +7,7 @@
       @input="onInputChange"
       :id="id"
       :data-test="id"
-      :type="id === 'password' ? 'password' : 'text'"
+      :type="type"
       :placeholder="label"
     />
     <span
@@ -30,6 +30,9 @@ const props = defineProps({
   },
   help: {
     type: String || undefined,
+  },
+  type: {
+    type: String
   },
   modelValue: {
     type: String,

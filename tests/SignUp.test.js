@@ -38,19 +38,8 @@ describe("Sign Up Page", () => {
     });
   });
   describe("interactions", () => {
-    const setup = async () => {
-      const wrapper = mount(SignUp);
-      const userNameInput = wrapper.find('[data-test="username"]');
-      const emailInput = wrapper.find('[data-test="email"]');
-      const passwordInput = wrapper.find('[data-test="password"]');
-      const passwordRepeatInput = wrapper.find('[data-test="password-repeat"]');
-
-      await userNameInput.setValue("user1");
-      await emailInput.setValue("user1@mail.com");
-      await passwordInput.setValue("password");
-      await passwordRepeatInput.setValue("password");
-      return wrapper;
-    };
+    let passwordInput;
+    let passwordRepeatInput;
     let requestBody;
     let counter = 0;
     const server = setupServer(
@@ -78,6 +67,20 @@ describe("Sign Up Page", () => {
       server.resetHandlers();
     });
     afterAll(() => server.close());
+
+    const setup = async () => {
+      const wrapper = mount(SignUp);
+      const userNameInput = wrapper.find('[data-test="username"]');
+      const emailInput = wrapper.find('[data-test="email"]');
+      passwordInput = wrapper.find('[data-test="password"]');
+      passwordRepeatInput = wrapper.find('[data-test="password-repeat"]');
+
+      await userNameInput.setValue("user1");
+      await emailInput.setValue("user1@mail.com");
+      await passwordInput.setValue("password");
+      await passwordRepeatInput.setValue("password");
+      return wrapper;
+    };
 
     test("enables the button when the password and password repeat fileds the same value", async () => {
       const wrapper = mount(SignUp);
@@ -231,6 +234,18 @@ describe("Sign Up Page", () => {
       await waitForExpect(() => {
         const form = wrapper.find("[data-test='form-sing-up']");
         expect(form.exists()).toBe(false);
+      });
+    });
+
+    test("displays mismatch message for password repeat input", async () => {
+      const wrapper = await setup();
+
+      await passwordInput.setValue("P4ssword");
+      await passwordRepeatInput.setValue("Password");
+
+      await waitForExpect(() => {
+        const text = wrapper.find("[data-test='error-password-repeat']");
+        expect(text.exists()).toBe(true);
       });
     });
   });
