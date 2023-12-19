@@ -1,17 +1,27 @@
-import { mount } from "@vue/test-utils";
+import { mount, config  } from "@vue/test-utils";
 import SignUp from "../src/pages/SignUp.vue";
 import waitForExpect from "wait-for-expect";
 import { setupServer } from "msw/node";
 import { rest } from "msw";
+import i18n from "../src/locales/i18n";
+
 describe("Sign Up Page", () => {
   describe("layout", () => {
+    const setup = () => {
+      const wrapper = mount(SignUp, {
+        global: {
+          plugins: [i18n]
+        }
+      });
+      return wrapper
+    }
     test("SignUp Component renders the correct text", () => {
-      const wrapper = mount(SignUp);
+      const wrapper = setup();
       expect(wrapper.find("h1").exists()).toBe(true);
     });
 
     test("inputs data-tests attributes", () => {
-      const wrapper = mount(SignUp);
+      const wrapper = setup();
       expect(wrapper.find('[data-test="username"]').exists()).toBe(true);
       expect(wrapper.find('[data-test="email"]').exists()).toBe(true);
       expect(wrapper.find('[data-test="password"]').exists()).toBe(true);
@@ -19,20 +29,20 @@ describe("Sign Up Page", () => {
     });
 
     test("has password type for input", () => {
-      const wrapper = mount(SignUp);
+      const wrapper = setup();
       const inputLength = wrapper.findAll('[type="password"]').length;
       expect(inputLength).toBe(2);
     });
 
     test("SignUp Component renders the singUp button", () => {
-      const wrapper = mount(SignUp);
+      const wrapper = setup();
       const signUpButton = wrapper.find("button");
       expect(signUpButton.exists()).toBe(true);
       expect(signUpButton.attributes("type")).toBe("submit");
     });
 
     test("SingUp button is disabled initially", () => {
-      const wrapper = mount(SignUp);
+      const wrapper = setup();
       const signUpButton = wrapper.find("button");
       expect(signUpButton.attributes().disabled).toBeDefined();
     });
@@ -71,7 +81,11 @@ describe("Sign Up Page", () => {
     afterAll(() => server.close());
 
     const setup = async () => {
-      const wrapper = mount(SignUp);
+      const wrapper = mount(SignUp, {
+        global: {
+          plugins: [i18n]
+        }
+      });
       username = wrapper.find('[data-test="username"]');
       email = wrapper.find('[data-test="email"]');
       password = wrapper.find('[data-test="password"]');
@@ -85,7 +99,11 @@ describe("Sign Up Page", () => {
     };
 
     test("enables the button when the password and password repeat fileds the same value", async () => {
-      const wrapper = mount(SignUp);
+      const wrapper = mount(SignUp, {
+        global: {
+          plugins: [i18n]
+        }
+      });
       const password = wrapper.find('[data-test="password"]');
       const passwordRepeatInput = wrapper.find('[data-test="password-repeat"]');
       const signUpButton = wrapper.find("button");
@@ -128,7 +146,11 @@ describe("Sign Up Page", () => {
     });
 
     test("spinner is hidden after in an ongoing api call", async () => {
-      const wrapper = mount(SignUp);
+      const wrapper = mount(SignUp, {
+        global: {
+          plugins: [i18n]
+        }
+      });
       const spin = wrapper.find('[data-test="progress"]');
       expect(spin.isVisible()).toBe(false);
     });
@@ -259,8 +281,8 @@ describe("Sign Up Page", () => {
     `(
       "clear validation error after field $field  is updated",
       async (params) => {
-        const { field, message } = params;
 
+        const { field, message } = params;
         server.use(generateValidationError(field, message));
 
         const wrapper = await setup();

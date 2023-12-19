@@ -5,19 +5,19 @@
       v-if="!singUpSuccess"
       class="border border-gray-300 rounded-lg p-5 mx-auto flex flex-col items-center gap-5 justify-center"
     >
-      <h1 class="text-white text-center">Sign Up</h1>
+      <h1 class="text-white text-center">{{ $t("signUp") }}</h1>
 
       <Input
         v-model="username"
         id="username"
-        label="Username"
+        :label="$t('username')"
         :help="errors?.username"
       />
 
       <Input
         v-model="email"
         id="email"
-        label="E-mail"
+        :label="$t('email')"
         :help="errors?.email"
       />
 
@@ -25,17 +25,17 @@
         v-model="password"
         id="password"
         type="password"
-        label="Password"
+        :label="$t('password')"
         :help="errors?.password"
-      />  
+      />
 
       <Input
         v-model="passwordrepeat"
         id="password-repeat"
         type="password"
-        label="Password repeat"
-        :help="hasPasswordMismatch ? 'Password Mismatch':undefined"
-      />       
+        :label="$t('passwordRepeat')"
+        :help="hasPasswordMismatch ? 'Password Mismatch' : undefined"
+      />
 
       <button
         class="submit_btn"
@@ -43,7 +43,7 @@
         :disabled="isDisabled || apiProgress"
         @click.prevent="submit"
       >
-        Sign Up
+        {{ $t("signUp") }}
 
         <svg
           v-show="apiProgress"
@@ -90,16 +90,15 @@ const singUpSuccess = ref(false);
 
 const errors = ref({});
 
-
 watch(username, () => {
   delete errors.value.username;
-})
+});
 watch(email, () => {
   delete errors.value.email;
-})
+});
 watch(password, () => {
   delete errors.value.passsword;
-})
+});
 
 const isDisabled = computed(() => {
   return password.value && passwordrepeat.value
@@ -108,8 +107,8 @@ const isDisabled = computed(() => {
 });
 
 const hasPasswordMismatch = computed(() => {
-  return password.value !== passwordrepeat.value 
-})
+  return password.value !== passwordrepeat.value;
+});
 
 const submit = () => {
   apiProgress.value = true;
