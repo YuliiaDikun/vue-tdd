@@ -74,6 +74,7 @@
       Please check your e-mail to activate your account.
     </p>
   </div>
+  <span @click="$i18n.locale = 'uk'" data-test="uk" title="Україська">UK</span>
 </template>
 <script setup>
 import axios from "axios";

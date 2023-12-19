@@ -4,7 +4,8 @@ import waitForExpect from "wait-for-expect";
 import { setupServer } from "msw/node";
 import { rest } from "msw";
 import i18n from "../src/locales/i18n";
-import en from '../src/locales/en.json';
+import en from "../src/locales/en.json";
+import uk from "../src/locales/uk.json";
 
 describe("Sign Up Page", () => {
   describe("layout", () => {
@@ -301,12 +302,17 @@ describe("Sign Up Page", () => {
     );
   });
   describe("internationalization ", () => {
-    test("initially displays all text in English", () => {
+    const setup = () => {
       const wrapper = mount(SignUp, {
         global: {
           plugins: [i18n],
         },
       });
+      return wrapper;
+    };
+
+    test("initially displays all text in English", () => {
+      const wrapper = setup();
       const header = wrapper.find("h1");
       const button = wrapper.find("button");
       const usernameLabel = wrapper.find("[data-test='label-username']");
@@ -318,5 +324,26 @@ describe("Sign Up Page", () => {
       expect(emailLabel.text()).toBe(en.email);
       expect(passwordLabel.text()).toBe(en.password);
     });
+
+    test("displays all text in Ukrainian after selecting that language", async () => {
+      const wrapper = setup();
+      const ukrainian = wrapper.find('[data-test="uk"]');
+
+      await ukrainian.trigger("click");
+
+      waitForExpect(() => {
+        const header = wrapper.find("h1");
+        const button = wrapper.find("button");
+        const usernameLabel = wrapper.find("[data-test='label-username']");
+        const emailLabel = wrapper.find("[data-test='label-email']");
+        const passwordLabel = wrapper.find("[data-test='label-password']");
+        expect(header.text()).toBe(uk.signUp);
+        expect(button.text()).toBe(uk.signUp);
+        expect(usernameLabel.text()).toBe(uk.username);
+        expect(emailLabel.text()).toBe(uk.email);
+        expect(passwordLabel.text()).toBe(uk.password);
+      });
+    });
+    
   });
 });
