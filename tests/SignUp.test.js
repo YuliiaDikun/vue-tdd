@@ -1,20 +1,21 @@
-import { mount, config  } from "@vue/test-utils";
+import { mount, config } from "@vue/test-utils";
 import SignUp from "../src/pages/SignUp.vue";
 import waitForExpect from "wait-for-expect";
 import { setupServer } from "msw/node";
 import { rest } from "msw";
 import i18n from "../src/locales/i18n";
+import en from '../src/locales/en.json';
 
 describe("Sign Up Page", () => {
   describe("layout", () => {
     const setup = () => {
       const wrapper = mount(SignUp, {
         global: {
-          plugins: [i18n]
-        }
+          plugins: [i18n],
+        },
       });
-      return wrapper
-    }
+      return wrapper;
+    };
     test("SignUp Component renders the correct text", () => {
       const wrapper = setup();
       expect(wrapper.find("h1").exists()).toBe(true);
@@ -83,8 +84,8 @@ describe("Sign Up Page", () => {
     const setup = async () => {
       const wrapper = mount(SignUp, {
         global: {
-          plugins: [i18n]
-        }
+          plugins: [i18n],
+        },
       });
       username = wrapper.find('[data-test="username"]');
       email = wrapper.find('[data-test="email"]');
@@ -101,8 +102,8 @@ describe("Sign Up Page", () => {
     test("enables the button when the password and password repeat fileds the same value", async () => {
       const wrapper = mount(SignUp, {
         global: {
-          plugins: [i18n]
-        }
+          plugins: [i18n],
+        },
       });
       const password = wrapper.find('[data-test="password"]');
       const passwordRepeatInput = wrapper.find('[data-test="password-repeat"]');
@@ -148,8 +149,8 @@ describe("Sign Up Page", () => {
     test("spinner is hidden after in an ongoing api call", async () => {
       const wrapper = mount(SignUp, {
         global: {
-          plugins: [i18n]
-        }
+          plugins: [i18n],
+        },
       });
       const spin = wrapper.find('[data-test="progress"]');
       expect(spin.isVisible()).toBe(false);
@@ -281,7 +282,6 @@ describe("Sign Up Page", () => {
     `(
       "clear validation error after field $field  is updated",
       async (params) => {
-
         const { field, message } = params;
         server.use(generateValidationError(field, message));
 
@@ -299,5 +299,24 @@ describe("Sign Up Page", () => {
         });
       }
     );
+  });
+  describe("internationalization ", () => {
+    test("initially displays all text in English", () => {
+      const wrapper = mount(SignUp, {
+        global: {
+          plugins: [i18n],
+        },
+      });
+      const header = wrapper.find("h1");
+      const button = wrapper.find("button");
+      const usernameLabel = wrapper.find("[data-test='label-username']");
+      const emailLabel = wrapper.find("[data-test='label-email']");
+      const passwordLabel = wrapper.find("[data-test='label-password']");
+      expect(header.text()).toBe(en.signUp);
+      expect(button.text()).toBe(en.signUp);
+      expect(usernameLabel.text()).toBe(en.username);
+      expect(emailLabel.text()).toBe(en.email);
+      expect(passwordLabel.text()).toBe(en.password);
+    });
   });
 });

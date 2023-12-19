@@ -1,6 +1,6 @@
 <template>
   <div class="form-block">
-    <label :for="id">{{ label }}</label>
+    <label :data-test="`label-${id}`" :for="id">{{ label }}</label>
     <input
       :class="help !== undefined ? 'border-red-500' : 'border-gray-300'"
       :value="modelValue"
