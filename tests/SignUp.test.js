@@ -345,5 +345,29 @@ describe("Sign Up Page", () => {
       });
     });
     
+    test("displays all text in English after page is translated to Ukrainian", async () => {
+      const wrapper = setup();
+
+      const ukrainian = wrapper.find('[data-test="uk"]');
+      await ukrainian.trigger("click");
+
+      const english = wrapper.find('[data-test="en"]');
+      await english.trigger("click");
+
+      waitForExpect(() => {
+        const header = wrapper.find("h1");
+        const button = wrapper.find("button");
+        const usernameLabel = wrapper.find("[data-test='label-username']");
+        const emailLabel = wrapper.find("[data-test='label-email']");
+        const passwordLabel = wrapper.find("[data-test='label-password']");
+        expect(header.text()).toBe(en.signUp);
+        expect(button.text()).toBe(en.signUp);
+        expect(usernameLabel.text()).toBe(en.username);
+        expect(emailLabel.text()).toBe(en.email);
+        expect(passwordLabel.text()).toBe(en.password);
+      });
+    });
   });
+
+  
 });

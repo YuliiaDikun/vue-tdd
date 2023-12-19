@@ -1,5 +1,6 @@
 <template>
-  <div class="max-w-[500px] mx-auto px-5 pt-10 text-white">
+  <div class=" px-5 pt-10 max-w-6xl mx-auto">
+    <div class="max-w-[500px] mx-auto  text-white">
     <form
       data-test="form-sing-up"
       v-if="!singUpSuccess"
@@ -74,7 +75,25 @@
       Please check your e-mail to activate your account.
     </p>
   </div>
-  <span @click="$i18n.locale = 'uk'" data-test="uk" title="Україська">UK</span>
+
+  <div class="mt-6 flex items-center justify-start gap-[18px]">
+    <img
+      class="cursor-pointer"
+      @click="$i18n.locale = 'uk'"
+      data-test="uk"
+      title="Україська"
+      src="https://flagsapi.com/UA/flat/24.png"
+    />
+
+    <img
+      class="cursor-pointer"
+      @click="$i18n.locale = 'en'"
+      data-test="en"
+      title="English"
+      src="https://flagsapi.com/GB/flat/24.png"
+    />
+  </div>
+  </div>
 </template>
 <script setup>
 import axios from "axios";
