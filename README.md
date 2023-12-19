@@ -9,5 +9,5 @@ Learning Vue 3 / Vite by applying test-driven development (using jest, @vue/test
 
 [Test-Driven Development in Vue.js: Building Robust and Reliable Applications](https://medium.com/@issam.ahw/test-driven-development-in-vue-js-building-robust-and-reliable-applications-69e595f275fb)
 
-[Jest Each](https://jest-archive-august-2023.netlify.app/blog/2018/05/29/jest-23-blazing-fast-delightful-testing#jest-each)
+[Jest Each](https://jest-archive-august-2023.netlify.app/docs/api#testeachtablename-fn-timeout)
 
