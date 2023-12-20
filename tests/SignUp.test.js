@@ -326,19 +326,9 @@ describe("Sign Up Page", () => {
       return wrapper;
     };
 
-    test("initially displays all text in English", () => {
-      const wrapper = setup();
-      const header = wrapper.find("h1");
-      const button = wrapper.find("button");
-      const usernameLabel = wrapper.find("[data-test='label-username']");
-      const emailLabel = wrapper.find("[data-test='label-email']");
-      const passwordLabel = wrapper.find("[data-test='label-password']");
-      expect(header.text()).toBe(en.signUp);
-      expect(button.text()).toBe(en.signUp);
-      expect(usernameLabel.text()).toBe(en.username);
-      expect(emailLabel.text()).toBe(en.email);
-      expect(passwordLabel.text()).toBe(en.password);
-    });
+    afterEach(() => {
+      i18n.global.locale = 'en'
+    })
 
     test("displays all text in Ukrainian after selecting that language", async () => {
       const wrapper = setup();
@@ -357,6 +347,19 @@ describe("Sign Up Page", () => {
         expect(emailLabel.text()).toBe(uk.email);
         expect(passwordLabel.text()).toBe(uk.password);
       });
+    });
+    test("initially displays all text in English", () => {
+      const wrapper = setup();
+      const header = wrapper.find("h1");
+      const button = wrapper.find("button");
+      const usernameLabel = wrapper.find("[data-test='label-username']");
+      const emailLabel = wrapper.find("[data-test='label-email']");
+      const passwordLabel = wrapper.find("[data-test='label-password']");
+      expect(header.text()).toBe(en.signUp);
+      expect(button.text()).toBe(en.signUp);
+      expect(usernameLabel.text()).toBe(en.username);
+      expect(emailLabel.text()).toBe(en.email);
+      expect(passwordLabel.text()).toBe(en.password);
     });
 
     test("displays all text in English after page is translated to Ukrainian", async () => {
