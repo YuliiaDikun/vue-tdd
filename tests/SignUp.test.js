@@ -1,5 +1,6 @@
 import { mount, config } from "@vue/test-utils";
 import SignUp from "../src/pages/SignUp.vue";
+import Language from "../src/components/Language.vue";
 import waitForExpect from "wait-for-expect";
 import { setupServer } from "msw/node";
 import { rest } from "msw";
@@ -302,12 +303,26 @@ describe("Sign Up Page", () => {
     );
   });
   describe("internationalization ", () => {
+    let ukrainian;
+    let english;
     const setup = () => {
-      const wrapper = mount(SignUp, {
+      const app = {
+        components: {
+          SignUp,
+          Language,
+        },
+        template: `
+        <SignUp />
+        <Language/>
+        `,
+      };
+      const wrapper = mount(app, {
         global: {
           plugins: [i18n],
         },
       });
+      ukrainian = wrapper.find('[data-test="uk"]');
+      english = wrapper.find('[data-test="en"]');
       return wrapper;
     };
 
@@ -327,7 +342,6 @@ describe("Sign Up Page", () => {
 
     test("displays all text in Ukrainian after selecting that language", async () => {
       const wrapper = setup();
-      const ukrainian = wrapper.find('[data-test="uk"]');
 
       await ukrainian.trigger("click");
 
@@ -344,14 +358,12 @@ describe("Sign Up Page", () => {
         expect(passwordLabel.text()).toBe(uk.password);
       });
     });
-    
+
     test("displays all text in English after page is translated to Ukrainian", async () => {
       const wrapper = setup();
 
-      const ukrainian = wrapper.find('[data-test="uk"]');
       await ukrainian.trigger("click");
 
-      const english = wrapper.find('[data-test="en"]');
       await english.trigger("click");
 
       waitForExpect(() => {
@@ -368,6 +380,4 @@ describe("Sign Up Page", () => {
       });
     });
   });
-
-  
 });
