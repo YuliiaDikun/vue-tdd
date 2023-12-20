@@ -34,7 +34,7 @@
         id="password-repeat"
         type="password"
         :label="$t('passwordRepeat')"
-        :help="hasPasswordMismatch ? 'Password Mismatch' : undefined"
+        :help="hasPasswordMismatch ? $t('passwordMismatch') : undefined"
       />
 
       <button

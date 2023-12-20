@@ -305,6 +305,8 @@ describe("Sign Up Page", () => {
   describe("internationalization ", () => {
     let ukrainian;
     let english;
+    let password;
+    let passwordRepeat;
     const setup = () => {
       const app = {
         components: {
@@ -323,12 +325,29 @@ describe("Sign Up Page", () => {
       });
       ukrainian = wrapper.find('[data-test="uk"]');
       english = wrapper.find('[data-test="en"]');
+
+      password = wrapper.find("[data-test='password']");
+      passwordRepeat = wrapper.find("[data-test='password-repeat']");
       return wrapper;
     };
 
     afterEach(() => {
-      i18n.global.locale = 'en'
-    })
+      i18n.global.locale = "en";
+    });
+
+    test("initially displays all text in English", () => {
+      const wrapper = setup();
+      const header = wrapper.find("h1");
+      const button = wrapper.find("button");
+      const usernameLabel = wrapper.find("[data-test='label-username']");
+      const emailLabel = wrapper.find("[data-test='label-email']");
+      const passwordLabel = wrapper.find("[data-test='label-password']");
+      expect(header.text()).toBe(en.signUp);
+      expect(button.text()).toBe(en.signUp);
+      expect(usernameLabel.text()).toBe(en.username);
+      expect(emailLabel.text()).toBe(en.email);
+      expect(passwordLabel.text()).toBe(en.password);
+    });
 
     test("displays all text in Ukrainian after selecting that language", async () => {
       const wrapper = setup();
@@ -347,19 +366,6 @@ describe("Sign Up Page", () => {
         expect(emailLabel.text()).toBe(uk.email);
         expect(passwordLabel.text()).toBe(uk.password);
       });
-    });
-    test("initially displays all text in English", () => {
-      const wrapper = setup();
-      const header = wrapper.find("h1");
-      const button = wrapper.find("button");
-      const usernameLabel = wrapper.find("[data-test='label-username']");
-      const emailLabel = wrapper.find("[data-test='label-email']");
-      const passwordLabel = wrapper.find("[data-test='label-password']");
-      expect(header.text()).toBe(en.signUp);
-      expect(button.text()).toBe(en.signUp);
-      expect(usernameLabel.text()).toBe(en.username);
-      expect(emailLabel.text()).toBe(en.email);
-      expect(passwordLabel.text()).toBe(en.password);
     });
 
     test("displays all text in English after page is translated to Ukrainian", async () => {
@@ -382,5 +388,20 @@ describe("Sign Up Page", () => {
         expect(passwordLabel.text()).toBe(en.password);
       });
     });
+
+    test(" displays password mismatch validation in Ukrainian", async() => {
+      const wrapper = setup();
+
+      await ukrainian.trigger("click");
+
+      await password.setValue('P4ssword');
+      await passwordRepeat.setValue('password');
+
+      await waitForExpect(() => {
+        const text = wrapper.find("[data-test='error-password-repeat']");
+        expect(text.exists()).toBe(true);
+        expect(text.text()).toBe(uk.passwordMismatch);
+      });
+    })
   });
 });
