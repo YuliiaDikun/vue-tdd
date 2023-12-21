@@ -416,9 +416,7 @@ describe("Sign Up Page", () => {
     });
 
     test("sends accept-language having en to backend for sing up request", async () => {
-      const wrapper = setup();
-
-    
+      const wrapper = setup();    
 
       await username.setValue("user");
       await email.setValue("user@mail.com");

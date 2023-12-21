@@ -76,10 +76,9 @@
   </div>
 </template>
 <script setup>
-import axios from "axios";
 import { ref, computed, watch } from "vue";
 import Input from "../components/Input.vue";
-import i18n from "../locales/i18n";
+import { signUp } from "../api/apiCalls";
 
 const username = ref("");
 const email = ref("");
@@ -111,31 +110,20 @@ const hasPasswordMismatch = computed(() => {
   return password.value !== passwordrepeat.value;
 });
 
-const submit = () => {
-  apiProgress.value = true;
-
-  axios
-    .post(
-      "/api/1.0/users",
-      {
-        username: username.value,
-        email: email.value,
-        password: password.value,
-      },
-      {
-        headers: {
-          "Accept-Language": i18n.global.locale,
-        },
-      }
-    )
-    .then(() => {
-      singUpSuccess.value = true;
-    })
-    .catch((error) => {
-      if (error.response.status === 400) {
-        errors.value = error.response.data.validationErrors;
-      }
-      apiProgress.value = false;
+const submit = async () => {
+  try {
+    apiProgress.value = true;
+    await signUp({
+      username: username.value,
+      email: email.value,
+      password: password.value,
     });
+    singUpSuccess.value = true;
+  } catch (error) {
+    if (error.response.status === 400) {
+      errors.value = error.response.data.validationErrors;
+    }
+    apiProgress.value = false;
+  }
 };
 </script>
