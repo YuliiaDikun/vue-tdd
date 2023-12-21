@@ -4,5 +4,6 @@
   "email": "E-mail",
   "password": "Password",
   "passwordRepeat": "Password Repeat",
-  "passwordMismatch": "Password Mismatch"
+  "passwordMismatch": "Password Mismatch",
+  "emailCheck": "Please check your e-mail to activate your account."
 }

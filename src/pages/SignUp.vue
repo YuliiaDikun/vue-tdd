@@ -71,7 +71,7 @@
       role="alert"
       class="py-5 px-3 bg-green-900 rounded-xl mt-6"
     >
-      Please check your e-mail to activate your account.
+      {{ $t("emailCheck") }}
     </p>
   </div>
 </template>
@@ -79,6 +79,7 @@
 import axios from "axios";
 import { ref, computed, watch } from "vue";
 import Input from "../components/Input.vue";
+import i18n from "../locales/i18n";
 
 const username = ref("");
 const email = ref("");
@@ -114,11 +115,19 @@ const submit = () => {
   apiProgress.value = true;
 
   axios
-    .post("/api/1.0/users", {
-      username: username.value,
-      email: email.value,
-      password: password.value,
-    })
+    .post(
+      "/api/1.0/users",
+      {
+        username: username.value,
+        email: email.value,
+        password: password.value,
+      },
+      {
+        headers: {
+          "Accept-Language": i18n.global.locale,
+        },
+      }
+    )
     .then(() => {
       singUpSuccess.value = true;
     })

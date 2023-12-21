@@ -8,6 +8,25 @@ import i18n from "../src/locales/i18n";
 import en from "../src/locales/en.json";
 import uk from "../src/locales/uk.json";
 
+let counter = 0;
+let requestBody;
+let acceptLanguageHeader;
+const server = setupServer(
+  rest.post("/api/1.0/users", (req, res, ctx) => {
+    counter += 1;
+    acceptLanguageHeader = req.headers.get("Accept-Language");
+    requestBody = req.body;
+    return res(ctx.status(200));
+  })
+);
+
+beforeAll(() => server.listen());
+beforeEach(() => {
+  counter = 0;
+  server.resetHandlers();
+});
+afterAll(() => server.close());
+
 describe("Sign Up Page", () => {
   describe("layout", () => {
     const setup = () => {
@@ -53,17 +72,9 @@ describe("Sign Up Page", () => {
   describe("interactions", () => {
     let password;
     let passwordRepeatInput;
-    let requestBody;
     let username;
     let email;
-    let counter = 0;
-    const server = setupServer(
-      rest.post("/api/1.0/users", (req, res, ctx) => {
-        counter += 1;
-        requestBody = req.body;
-        return res(ctx.status(200));
-      })
-    );
+
     const generateValidationError = (field, message) => {
       return rest.post("/api/1.0/users", (req, res, ctx) => {
         return res.once(
@@ -76,12 +87,6 @@ describe("Sign Up Page", () => {
         );
       });
     };
-    beforeAll(() => server.listen());
-    beforeEach(() => {
-      counter = 0;
-      server.resetHandlers();
-    });
-    afterAll(() => server.close());
 
     const setup = async () => {
       const wrapper = mount(SignUp, {
@@ -305,8 +310,12 @@ describe("Sign Up Page", () => {
   describe("internationalization ", () => {
     let ukrainian;
     let english;
+    let username;
+    let email;
     let password;
     let passwordRepeat;
+    let button;
+    
     const setup = () => {
       const app = {
         components: {
@@ -325,9 +334,11 @@ describe("Sign Up Page", () => {
       });
       ukrainian = wrapper.find('[data-test="uk"]');
       english = wrapper.find('[data-test="en"]');
-
+      username = wrapper.find("[data-test='username']");
+      email = wrapper.find("[data-test='email']");
       password = wrapper.find("[data-test='password']");
       passwordRepeat = wrapper.find("[data-test='password-repeat']");
+      button = wrapper.find("button");
       return wrapper;
     };
 
@@ -389,19 +400,73 @@ describe("Sign Up Page", () => {
       });
     });
 
-    test(" displays password mismatch validation in Ukrainian", async() => {
+    test(" displays password mismatch validation in Ukrainian", async () => {
       const wrapper = setup();
 
       await ukrainian.trigger("click");
 
-      await password.setValue('P4ssword');
-      await passwordRepeat.setValue('password');
+      await password.setValue("P4ssword");
+      await passwordRepeat.setValue("password");
 
       await waitForExpect(() => {
         const text = wrapper.find("[data-test='error-password-repeat']");
         expect(text.exists()).toBe(true);
         expect(text.text()).toBe(uk.passwordMismatch);
       });
-    })
+    });
+
+    test("sends accept-language having en to backend for sing up request", async () => {
+      const wrapper = setup();
+
+    
+
+      await username.setValue("user");
+      await email.setValue("user@mail.com");
+      await password.setValue("P4ssword");
+      await passwordRepeat.setValue("P4ssword");
+      await button.trigger('click');
+
+      await waitForExpect(() => {
+        const mess = wrapper.get("[data-test='singUpSuccess']");
+        expect(mess.classes("hidden")).toBe(false);
+
+        expect(acceptLanguageHeader).toBe('en')
+      });
+    });
+
+    test("sends accept-language having uk after that language is selected", async () => {
+      const wrapper = setup(); 
+
+      await ukrainian.trigger("click"); 
+
+      await username.setValue("user");
+      await email.setValue("user@mail.com");
+      await password.setValue("P4ssword");
+      await passwordRepeat.setValue("P4ssword");
+      await button.trigger('click');
+
+      await waitForExpect(() => {
+        const mess = wrapper.get("[data-test='singUpSuccess']");
+        expect(mess.classes("hidden")).toBe(false);
+
+        expect(acceptLanguageHeader).toBe('uk')
+      });
+    });
+    test("displays account activation information in Ukrainian after selecting that language", async () => {
+      const wrapper = setup();
+
+      await ukrainian.trigger("click");
+
+      await username.setValue("user");
+      await email.setValue("user@mail.com");
+      await password.setValue("P4ssword");
+      await passwordRepeat.setValue("P4ssword");
+      await button.trigger('click');
+
+      await waitForExpect(() => {
+        const mess = wrapper.get("[data-test='singUpSuccess']");       
+        expect(mess.text()).toBe(uk.emailCheck);        
+      });
+    });
   });
 });
