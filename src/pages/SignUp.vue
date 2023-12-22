@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-[500px] mx-auto pt-10 text-white">
+  <div  data-test="signup" class="max-w-[500px] mx-auto pt-10 text-white">
     <form
       data-test="form-sing-up"
       v-if="!singUpSuccess"

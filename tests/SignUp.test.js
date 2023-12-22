@@ -1,4 +1,4 @@
-import { mount, config } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
 import SignUp from "../src/pages/SignUp.vue";
 import Language from "../src/components/Language.vue";
 import waitForExpect from "wait-for-expect";
