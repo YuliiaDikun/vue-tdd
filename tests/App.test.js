@@ -4,46 +4,44 @@ import waitForExpect from "wait-for-expect";
 import i18n from "../src/locales/i18n";
 
 describe("Routing", () => {
-  test("displays homepage at /", () => {
+  test.each`
+    path           | pageTestId
+    ${"/"}         | ${"homepage"}
+    ${"/signup"}   | ${"signup"}
+    ${"/login"}    | ${"login"}
+    ${"/user/1"}   | ${"user"}
+    ${"/user/2"}   | ${"user"}
+  `("displays $pageTestId at $path", (params) => {
+    const { path, pageTestId } = params;
+
+    window.history.pushState({}, "", path);
     const wrapper = mount(App, {
       global: {
         plugins: [i18n],
       },
     });
-    const homePage = wrapper.find("[data-test='homepage']");
-    expect(homePage.exists()).toBe(true);
+    const page = wrapper.find(`[data-test='${pageTestId}']`);
+    expect(page.exists()).toBe(true);
   });
 
-  test("Doest not display SignUpPage when at / ", () => {
+  test.each`
+    path         | pageTestId
+    ${"/"}       | ${"signUp"}
+    ${"/"}       | ${"login"}
+    ${"/signup"} | ${"homepage"}
+    ${"/signup"} | ${"login"}
+    ${"/login"}  | ${"homepage"}
+    ${"/login"}  | ${"signup"}
+  `("doest not display $pageTestId at $path", (params) => {
+    const { path, pageTestId } = params;
+
+    window.history.pushState({}, "", path);
     const wrapper = mount(App, {
       global: {
         plugins: [i18n],
       },
     });
-    const signUp = wrapper.find("[data-test='signup']");
-    expect(signUp.exists()).toBe(false);
-  });
-
-  test("displays signup page at /signup ", () => {
-    window.history.pushState({}, "", "/signup");
-
-    const wrapper = mount(App, {
-      global: {
-        plugins: [i18n],
-      },
-    });
-    const signUp = wrapper.find("[data-test='signup']");
-    expect(signUp.exists()).toBe(true);
-  });
-
-  test("Doest not display Homepage when at /signup ", () => {
-    window.history.pushState({}, "", "/signup");
-    const wrapper = mount(App, {
-      global: {
-        plugins: [i18n],
-      },
-    });
-    const homePage = wrapper.find("[data-test='homepage']");
-    expect(homePage.exists()).toBe(false);
+    const page = wrapper.find(`[data-test='${pageTestId}']`);
+    expect(page.exists()).toBe(false);
   });
 });
