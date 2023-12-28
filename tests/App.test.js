@@ -28,10 +28,16 @@ describe("Routing", () => {
     path         | pageTestId
     ${"/"}       | ${"signUp"}
     ${"/"}       | ${"login"}
+    ${"/"}       | ${"user"}
     ${"/signup"} | ${"homepage"}
     ${"/signup"} | ${"login"}
+    ${"/signup"} | ${"user"}
     ${"/login"}  | ${"homepage"}
     ${"/login"}  | ${"signup"}
+    ${"/login"}  | ${"user"}
+    ${"/user/1"}  | ${"homepage"}
+    ${"/user/1"}  | ${"signUp"}
+    ${"/user/1"}  | ${"login"}
   `("doest not display $pageTestId at $path", (params) => {
     const { path, pageTestId } = params;
 
