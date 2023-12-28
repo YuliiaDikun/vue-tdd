@@ -3,9 +3,11 @@ module.exports = {
     "^.+\\.jsx?$": "babel-jest",
     "^.+\\.vue$": "@vue/vue3-jest",
   },
-  testEnvironment: "jsdom",
-  
+  testEnvironment: "jsdom",  
   testEnvironmentOptions: {
     customExportConditions: ["node", "node-addons"],
   },
+  setupFilesAfterEnv: [
+    "./tests/setup.js"
+  ]
 };

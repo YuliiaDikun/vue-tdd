@@ -340,11 +340,7 @@ describe("Sign Up Page", () => {
       passwordRepeat = wrapper.find("[data-test='password-repeat']");
       button = wrapper.find("button");
       return wrapper;
-    };
-
-    afterEach(() => {
-      i18n.global.locale = "en";
-    });
+    };    
 
     test("initially displays all text in English", () => {
       const wrapper = setup();
