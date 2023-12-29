@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-6 flex items-center justify-end gap-[18px]">
+  <div class="pr-3 mt-6 flex items-center justify-end gap-[18px]">
     <img
       class="cursor-pointer"
       @click="$i18n.locale = 'uk'"
