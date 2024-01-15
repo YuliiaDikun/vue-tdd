@@ -56,14 +56,14 @@ describe("Sign Up Page", () => {
       expect(inputLength).toBe(2);
     });
 
-    test("SignUp Component renders the singUp button", () => {
+    test("SignUp Component renders the signup button", () => {
       const wrapper = setup();
       const signUpButton = wrapper.find("button");
       expect(signUpButton.exists()).toBe(true);
       expect(signUpButton.attributes("type")).toBe("submit");
     });
 
-    test("SingUp button is disabled initially", () => {
+    test("signup button is disabled initially", () => {
       const wrapper = setup();
       const signUpButton = wrapper.find("button");
       expect(signUpButton.attributes().disabled).toBeDefined();
@@ -165,7 +165,7 @@ describe("Sign Up Page", () => {
 
     test("does not display account activation message before sing up request", async () => {
       const wrapper = await setup();
-      const message = wrapper.get("[data-test='singUpSuccess']");
+      const message = wrapper.get("[data-test='signupSuccess']");
       expect(message.classes("hidden")).toBe(true);
     });
 
@@ -177,7 +177,7 @@ describe("Sign Up Page", () => {
       await signUpButton.trigger("click");
 
       await waitForExpect(() => {
-        const mess = wrapper.get("[data-test='singUpSuccess']");
+        const mess = wrapper.get("[data-test='signupSuccess']");
         expect(mess.classes("hidden")).toBe(false);
       });
     });
@@ -194,7 +194,7 @@ describe("Sign Up Page", () => {
       await signUpButton.trigger("click");
 
       await waitForExpect(() => {
-        const message = wrapper.get("[data-test='singUpSuccess']");
+        const message = wrapper.get("[data-test='signupSuccess']");
         expect(message.classes("hidden")).toBe(true);
       });
     });
@@ -421,7 +421,7 @@ describe("Sign Up Page", () => {
       await button.trigger('click');
 
       await waitForExpect(() => {
-        const mess = wrapper.get("[data-test='singUpSuccess']");
+        const mess = wrapper.get("[data-test='signupSuccess']");
         expect(mess.classes("hidden")).toBe(false);
 
         expect(acceptLanguageHeader).toBe('en')
@@ -440,7 +440,7 @@ describe("Sign Up Page", () => {
       await button.trigger('click');
 
       await waitForExpect(() => {
-        const mess = wrapper.get("[data-test='singUpSuccess']");
+        const mess = wrapper.get("[data-test='signupSuccess']");
         expect(mess.classes("hidden")).toBe(false);
 
         expect(acceptLanguageHeader).toBe('uk')
@@ -458,7 +458,7 @@ describe("Sign Up Page", () => {
       await button.trigger('click');
 
       await waitForExpect(() => {
-        const mess = wrapper.get("[data-test='singUpSuccess']");       
+        const mess = wrapper.get("[data-test='signupSuccess']");       
         expect(mess.text()).toBe(uk.emailCheck);        
       });
     });

@@ -2,7 +2,7 @@
   <div  data-test="signup" class="max-w-[500px] mx-auto pt-10 text-white">
     <form
       data-test="form-sing-up"
-      v-if="!singUpSuccess"
+      v-if="!signupSuccess"
       class="border border-gray-300 rounded-lg p-5 mx-auto flex flex-col items-center gap-5 justify-center"
     >
       <h1 class="text-white text-center">{{ $t("signUp") }}</h1>
@@ -66,8 +66,8 @@
       </button>
     </form>
     <p
-      data-test="singUpSuccess"
-      :class="!singUpSuccess && 'hidden'"
+      data-test="signupSuccess"
+      :class="!signupSuccess && 'hidden'"
       role="alert"
       class="py-5 px-3 bg-green-900 rounded-xl mt-6"
     >
@@ -86,7 +86,7 @@ const password = ref("");
 const passwordrepeat = ref("");
 
 const apiProgress = ref(false);
-const singUpSuccess = ref(false);
+const signupSuccess = ref(false);
 
 const errors = ref({});
 
@@ -118,7 +118,7 @@ const submit = async () => {
       email: email.value,
       password: password.value,
     });
-    singUpSuccess.value = true;
+    signupSuccess.value = true;
   } catch (error) {
     if (error.response.status === 400) {
       errors.value = error.response.data.validationErrors;

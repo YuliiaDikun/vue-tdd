@@ -35,7 +35,7 @@
     </nav>
 
     <Language />
-    <router-view />
+    <router-view ></router-view>
   </div>
 </template>
 
