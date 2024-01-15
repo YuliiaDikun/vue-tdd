@@ -1,15 +1,17 @@
 import { mount } from "@vue/test-utils";
 import App from "../src/App.vue";
 import i18n from "../src/locales/i18n";
+import router from "../src/routes/router";
 import waitForExpect from "wait-for-expect";
 
-const setup = (path) => {
-  window.history.pushState({}, "", path);
+const setup = async (path) => {
   const wrapper = mount(App, {
     global: {
-      plugins: [i18n],
+      plugins: [i18n, router],
     },
   });
+  router.replace(path);
+  await router.isReady();
   return wrapper;
 };
 
@@ -21,12 +23,14 @@ describe("Routing", () => {
     ${"/login"}  | ${"login"}
     ${"/user/1"} | ${"user"}
     ${"/user/2"} | ${"user"}
-  `("displays $pageTestId at $path", (params) => {
+  `("displays $pageTestId at $path", async (params) => {
     const { path, pageTestId } = params;
-    const wrapper = setup(path);
+    const wrapper = await setup(path);
 
-    const page = wrapper.find(`[data-test='${pageTestId}']`);
-    expect(page.exists()).toBe(true);
+    waitForExpect(() => {
+      const page = wrapper.find(`[data-test='${pageTestId}']`);
+      expect(page.exists()).toBe(true);
+    });
   });
 
   test.each`
@@ -43,13 +47,15 @@ describe("Routing", () => {
     ${"/user/1"} | ${"homepage"}
     ${"/user/1"} | ${"signUp"}
     ${"/user/1"} | ${"login"}
-  `("doest not display $pageTestId at $path", (params) => {
+  `("doest not display $pageTestId at $path", async (params) => {
     const { path, pageTestId } = params;
 
-    const wrapper = setup(path);
+    const wrapper = await setup(path);
 
-    const page = wrapper.find(`[data-test='${pageTestId}']`);
-    expect(page.exists()).toBe(false);
+    waitForExpect(() => {
+      const page = wrapper.find(`[data-test='${pageTestId}']`);
+      expect(page.exists()).toBe(false);
+    });
   });
 
   test.each`
@@ -57,9 +63,9 @@ describe("Routing", () => {
     ${"home"}
     ${"signup"}
     ${"login"}
-  `("has link to $targetPage on NavBar", (params) => {
+  `("has link to $targetPage on NavBar", async (params) => {
     const { targetPage } = params;
-    const wrapper = setup("/");
+    const wrapper = await setup("/");
     const homeLink = wrapper.find(`[data-test='${targetPage}Link']`);
     expect(homeLink.exists()).toBe(true);
   });
@@ -73,7 +79,7 @@ describe("Routing", () => {
     "displays $visiblePage page after clicking $clickingTo link at $initialPath page",
     async (params) => {
       const { initialPath, clickingTo, visiblePage } = params;
-      const wrapper = setup(initialPath);
+      const wrapper = await setup(initialPath);
       const link = wrapper.find(`[data-test='${clickingTo}Link']`);
 
       await link.trigger("click");
