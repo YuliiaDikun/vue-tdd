@@ -17,12 +17,14 @@ const setup = async (path) => {
 
 describe("Routing", () => {
   test.each`
-    path         | pageTestId
-    ${"/"}       | ${"homepage"}
-    ${"/signup"} | ${"signup"}
-    ${"/login"}  | ${"login"}
-    ${"/user/1"} | ${"user"}
-    ${"/user/2"} | ${"user"}
+    path                  | pageTestId
+    ${"/"}                | ${"homepage"}
+    ${"/signup"}          | ${"signup"}
+    ${"/login"}           | ${"login"}
+    ${"/user/1"}          | ${"user"}
+    ${"/user/2"}          | ${"user"}
+    ${"/activate/436432"} | ${"activation"}
+    ${"/activate/564572"} | ${"activation"}
   `("displays $pageTestId at $path", async (params) => {
     const { path, pageTestId } = params;
     const wrapper = await setup(path);
@@ -34,19 +36,27 @@ describe("Routing", () => {
   });
 
   test.each`
-    path         | pageTestId
-    ${"/"}       | ${"signUp"}
-    ${"/"}       | ${"login"}
-    ${"/"}       | ${"user"}
-    ${"/signup"} | ${"homepage"}
-    ${"/signup"} | ${"login"}
-    ${"/signup"} | ${"user"}
-    ${"/login"}  | ${"homepage"}
-    ${"/login"}  | ${"signup"}
-    ${"/login"}  | ${"user"}
-    ${"/user/1"} | ${"homepage"}
-    ${"/user/1"} | ${"signUp"}
-    ${"/user/1"} | ${"login"}
+    path                  | pageTestId
+    ${"/"}                | ${"signUp"}
+    ${"/"}                | ${"login"}
+    ${"/"}                | ${"user"}
+    ${"/"}                | ${"activation"}
+    ${"/signup"}          | ${"homepage"}
+    ${"/signup"}          | ${"login"}
+    ${"/signup"}          | ${"user"}
+    ${"/signup"}          | ${"activation"}
+    ${"/login"}           | ${"homepage"}
+    ${"/login"}           | ${"signup"}
+    ${"/login"}           | ${"user"}
+    ${"/login"}           | ${"activation"}
+    ${"/user/1"}          | ${"homepage"}
+    ${"/user/1"}          | ${"signUp"}
+    ${"/user/1"}          | ${"login"}
+    ${"/user/1"}          | ${"activation"}
+    ${"/activate/564572"} | ${"signUp"}
+    ${"/activate/564572"} | ${"login"}
+    ${"/activate/564572"} | ${"user"}
+    ${"/activate/564572"} | ${"homepage"}
   `("doest not display $pageTestId at $path", async (params) => {
     const { path, pageTestId } = params;
 
