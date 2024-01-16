@@ -1,13 +1,15 @@
 import AccountActivationPage from "../src/pages/AccountActivationPage.vue";
+import router from "../src/routes/router";
+import i18n from "../src/locales/i18n";
 import { mount } from "@vue/test-utils";
 import waitForExpect from "wait-for-expect";
 import { setupServer } from "msw/node";
 import { rest } from "msw";
 
-const serverAccount = setupServer();
-
-beforeAll(() => serverAccount.listen());
 let counter;
+
+const serverAccount = setupServer();
+beforeAll(() => serverAccount.listen());
 beforeEach(() => {
   counter = 0;
   serverAccount.resetHandlers();
@@ -22,8 +24,10 @@ afterAll(() => serverAccount.close());
 
 describe("Account Activation Page", () => {
   const setup = (token) => {
-    const wrapper = mount(AccountActivationPage, {
+    const wrapper = mount(AccountActivationPage, {     
       global: {
+        plugins: [i18n, router],
+      },
         mocks: {
           $route: {
             params: {
@@ -31,10 +35,10 @@ describe("Account Activation Page", () => {
             },
           },
         },
-      },
+      
     });
     return wrapper;
-  };
+  }; 
   
   test("displays activation success message when token is correct ", () => {
     const wrapper = setup("1234");

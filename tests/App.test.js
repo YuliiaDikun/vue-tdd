@@ -6,17 +6,17 @@ import waitForExpect from "wait-for-expect";
 import { setupServer } from "msw/node";
 import { rest } from "msw";
 
-const serverAccount = setupServer(rest.post("/api/1.0/users/token/:token", (req, res, ctx) => {
+const serverApp = setupServer(rest.post("/api/1.0/users/token/:token", (req, res, ctx) => {
   counter += 1;
   return res.once(ctx.status(200));
 }));
 
-beforeAll(() => serverAccount.listen());
+beforeAll(() => serverApp.listen());
 
 beforeEach(() => { 
-  serverAccount.resetHandlers(); 
+  serverApp.resetHandlers(); 
 });
-afterAll(() => serverAccount.close());
+afterAll(() => serverApp.close());
 
 
 

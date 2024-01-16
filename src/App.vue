@@ -45,8 +45,4 @@ import Language from "./components/Language.vue";
 
 const path = ref(window.location.pathname);
 
-const onClickLink = (event) => {
-  path.value = event.target.attributes.href.value;
-  window.history.pushState({}, "", path.value);
-};
 </script>

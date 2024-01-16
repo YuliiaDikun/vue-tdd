@@ -21,7 +21,7 @@ const isSuccess = ref(false);
 
 onMounted(async () => {
   try {    
-    const token = useRoute().params.token;
+    const token = useRoute()?.params.token;
     await activate(token);
     isSuccess.value = true;
   } catch (error) {}
